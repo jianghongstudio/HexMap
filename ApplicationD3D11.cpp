@@ -209,8 +209,6 @@ void ApplicationD3D11::UpdateScene(float deltaTime)
 
 	XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
 	XMStoreFloat4x4(&m_View, V);
-
-
 }
 
 void ApplicationD3D11::RenderScene()

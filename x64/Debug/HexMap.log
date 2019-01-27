@@ -1,0 +1,15 @@
+﻿  stdafx.cpp
+  ApplicationBase.cpp
+e:\projects\directx11\hexmap\hexmap\applicationbase.cpp(85): warning C4838: 从“UINT”转换到“LONG”需要收缩转换
+e:\projects\directx11\hexmap\hexmap\applicationbase.cpp(117): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  ApplicationD3D11.cpp
+e:\projects\directx11\hexmap\hexmap\applicationd3d11.cpp(393): warning C4267: “参数”: 从“size_t”转换到“UINT”，可能丢失数据
+e:\projects\directx11\hexmap\hexmap\applicationd3d11.cpp(518): warning C4267: “=”: 从“size_t”转换到“UINT”，可能丢失数据
+e:\projects\directx11\hexmap\hexmap\applicationd3d11.cpp(531): warning C4267: “=”: 从“size_t”转换到“UINT”，可能丢失数据
+  GeometryGenerator.cpp
+  Main.cpp
+  Timer.cpp
+  TimerWin32.cpp
+  正在生成代码...
+ApplicationD3D11.obj : error LNK2019: 无法解析的外部符号 D3DX11CreateEffectFromMemory，该符号在函数 "protected: void __cdecl ApplicationD3D11::BuildFX(void)" (?BuildFX@ApplicationD3D11@@IEAAXXZ) 中被引用
+E:\Projects\DirectX11\HexMap\x64\Debug\HexMap.exe : fatal error LNK1120: 1 个无法解析的外部命令

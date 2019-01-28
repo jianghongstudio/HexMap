@@ -2,9 +2,9 @@
 #include "ApplicationBase.h"
 using namespace std;
 
-extern unique_ptr<ApplicationBase> s_pAppInstance;
+extern unique_ptr<Application> s_pAppInstance;
 
-ApplicationBase::ApplicationBase(const TCHAR* titleName, const TCHAR* className)
+Application::Application(const TCHAR* titleName, const TCHAR* className)
 	: m_szTitle(titleName)
 	, m_WndClassName(className)
 	, m_ClientWidth(800)
@@ -14,11 +14,11 @@ ApplicationBase::ApplicationBase(const TCHAR* titleName, const TCHAR* className)
 }
 
 
-ApplicationBase::~ApplicationBase()
+Application::~Application()
 {
 }
 
-bool ApplicationBase::InitApp(HINSTANCE hinstance)
+bool Application::InitApp(HINSTANCE hinstance)
 {
 	if (!CreateMainWindows(hinstance))
 	{
@@ -27,12 +27,8 @@ bool ApplicationBase::InitApp(HINSTANCE hinstance)
 	return true;
 }
 
-void ApplicationBase::Run()
+void Application::Run()
 {
-
-	ShowWindow(m_hWnd, SW_SHOW);
-	UpdateWindow(m_hWnd);
-
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));
 	while (msg.message != WM_QUIT)
@@ -49,12 +45,12 @@ void ApplicationBase::Run()
 	}
 }
 
-ApplicationBase* ApplicationBase::GetApp()
+Application* Application::GetApp()
 {
 	return s_pAppInstance.get();
 }
 
-LRESULT ApplicationBase::StaticWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT Application::StaticWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	auto pApplication = GetApp();
 	if (pApplication)
@@ -64,7 +60,7 @@ LRESULT ApplicationBase::StaticWndProc(HWND hwnd, UINT message, WPARAM wParam, L
 	return 0;
 }
 
-bool ApplicationBase::CreateMainWindows(HINSTANCE hInstance)
+bool Application::CreateMainWindows(HINSTANCE hInstance)
 {
 	WNDCLASSEX wcex;
 
@@ -99,12 +95,14 @@ bool ApplicationBase::CreateMainWindows(HINSTANCE hInstance)
 
 	m_hAppInstance = hInstance;
 	m_hWnd = hWnd;
+	ShowWindow(m_hWnd, SW_SHOW);
+	UpdateWindow(m_hWnd);
 
 	return true;
 }
 
 
-LRESULT ApplicationBase::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT Application::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;

@@ -4,8 +4,8 @@
 #include "Timer.h"
 #include "d3dx11effect.h"
 #include "GeometryGenerator.h"
+#include <wrl/client.h>
 #include "RenderD3D11.h"
-using namespace DirectX;
 
 struct Vertex
 {
@@ -14,7 +14,7 @@ struct Vertex
 };
 
 class ApplicationD3D11 :
-	public ApplicationBase
+	public Application
 {
 public:
 	ApplicationD3D11(const TCHAR* titleName = _T("D3D11App"), const TCHAR* className = _T("WndClass"));
@@ -23,7 +23,7 @@ public:
 	bool InitApp(HINSTANCE hinstance) final;
 
 protected:
-	//bool InitDirectX3D11();
+	bool InitDirectX3D11();
 	void OnResize();
 	virtual LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 
@@ -41,7 +41,7 @@ protected:
 	float AspectRatio()const;
 private:
 	
-	//bool m_Enable4xMsaa;
+	bool m_Enable4xMsaa;
 	bool m_AppPaused;
 	bool m_Minimized;
 	bool m_Maximized;
@@ -49,21 +49,13 @@ private:
 
 	Timer* m_pTimer;
 
-	//UINT m_4xMsaaQuality;
+	UINT m_4xMsaaQuality;
 
-	/*ID3D11Device* m_pDevice;
-	ID3D11DeviceContext* m_pImmdiateContext;
-	IDXGISwapChain* m_pSwapChain;
-	ID3D11RenderTargetView* m_pRenderTargetView;
-	ID3D11Texture2D* m_pDepthStencilBuffer;
-	ID3D11DepthStencilView* m_pDepthStencilView;
-	D3D11_VIEWPORT m_ScreenViewport;
-	ID3D11InputLayout* m_pInputLayout;
-	ID3D11Buffer* m_pBoxVB;
-	ID3D11Buffer* m_pBoxIB;
-	ID3D11RasterizerState* m_pWireFrameRS;*/
-
-	std::unique_ptr<RenderD3D11> m_d3dRender;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
+	std::unique_ptr<RenderD3D11> m_render;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_BoxVB;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_BoxIB;
+	ID3D11RasterizerState* m_pWireFrameRS;
 
 	//Effect
 	ID3DX11Effect* m_pFX;

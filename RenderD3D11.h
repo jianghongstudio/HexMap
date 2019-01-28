@@ -9,7 +9,7 @@ class RenderD3D11
 public:
 	RenderD3D11(DXGI_FORMAT backBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM,
 		DXGI_FORMAT depthBufferFormat = DXGI_FORMAT_D24_UNORM_S8_UINT,
-		UINT backBufferCount = 2,
+		UINT backBufferCount = 1,
 		D3D_FEATURE_LEVEL minFeatureLevel = D3D_FEATURE_LEVEL_11_0);
 	virtual ~RenderD3D11();
 
@@ -22,9 +22,7 @@ public:
 	void Present();
 
 	ID3D11Device*           GetD3DDevice() const { return m_d3dDevice.Get(); }
-	//ID3D11Device1*          GetD3DDevice1() const { return m_d3dDevice1.Get(); }
 	ID3D11DeviceContext*    GetD3DDeviceContext() const { return m_d3dContext.Get(); }
-	//ID3D11DeviceContext1*   GetD3DDeviceContext1() const { return m_d3dContext1.Get(); }
 	IDXGISwapChain*         GetSwapChain() const { return m_swapChain.Get(); }
 	IDXGISwapChain1*        GetSwapChain1() const { return m_swapChain1.Get(); }
 	D3D_FEATURE_LEVEL       GetDeviceFeatureLevel() const { return m_d3dFeatureLevel; }

@@ -1,15 +1,15 @@
 #pragma once
 #include <windows.h>
 #include <tchar.h>
-class ApplicationBase
+class Application
 {
 public:
-	ApplicationBase(const TCHAR* titleName = _T("Title"),const TCHAR* className = _T("WndClass"));
-	virtual ~ApplicationBase();
+	Application(const TCHAR* titleName = _T("Title"),const TCHAR* className = _T("WndClass"));
+	virtual ~Application();
 
 	// disable copy
-	ApplicationBase(const ApplicationBase&) = delete;
-	ApplicationBase& operator = (const ApplicationBase&) = delete;
+	Application(const Application&) = delete;
+	Application& operator = (const Application&) = delete;
 
 	virtual bool InitApp(HINSTANCE hinstance);
 	void Run();
@@ -17,7 +17,7 @@ public:
 	virtual LRESULT WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 public:
-	static ApplicationBase* GetApp();
+	static Application* GetApp();
 	static LRESULT CALLBACK StaticWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 protected:

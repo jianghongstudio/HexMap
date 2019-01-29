@@ -86,3 +86,43 @@ void GeometryGenerator::CreateBox(float width, float height, float depth, MeshDa
 
 	meshData.Indices.assign(&i[0], &i[36]);
 }
+
+void GeometryGenerator::CreateHexCell(float innerRadius, float outerRadius, MeshData & mesh,const XMFLOAT3 offset)
+{
+	mesh.Vertices.resize(7);
+	mesh.Indices.resize(18);
+	mesh.Vertices[0] = Vertex(XMFLOAT3(0.f + offset.x, 0.f+offset.y, 0.f+offset.z), XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	mesh.Vertices[1] = Vertex(XMFLOAT3(-innerRadius + offset.x, 0 + offset.y, 0.5f*outerRadius + offset.z), XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT3(-innerRadius, 0.f, 0.5f*outerRadius), XMFLOAT2(0.f, 0.f));
+	mesh.Vertices[2] = Vertex(XMFLOAT3(0 + offset.x, 0 + offset.y, outerRadius + offset.z), XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT3(0.f, 0.f, 0.5f*outerRadius), XMFLOAT2(0.f, 0.f));
+	mesh.Vertices[3] = Vertex(XMFLOAT3(innerRadius + offset.x, 0 + offset.y, 0.5f*outerRadius + offset.z), XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT3(innerRadius, 0.f, 0.5f*outerRadius), XMFLOAT2(0.f, 0.f));
+	mesh.Vertices[4] = Vertex(XMFLOAT3(innerRadius + offset.x, 0 + offset.y, -0.5f*outerRadius + offset.z), XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT3(innerRadius, 0.f, -0.5f*outerRadius), XMFLOAT2(0.f, 0.f));
+	mesh.Vertices[5] = Vertex(XMFLOAT3(0 + offset.x, 0 + offset.y, -outerRadius + offset.z), XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT3(0, 0.f, -outerRadius), XMFLOAT2(0.f, 0.f));
+	mesh.Vertices[6] = Vertex(XMFLOAT3(-innerRadius + offset.x, 0 + offset.y, -0.5f*outerRadius + offset.z), XMFLOAT3(0.f, 1.f, 0.f), XMFLOAT3(-innerRadius, 0.f, -0.5f*outerRadius), XMFLOAT2(0.f, 0.f));
+
+	for (UINT i = 0;i<mesh.Indices.size()/3;i++)
+	{
+		mesh.Indices[i*3] = 0;
+		mesh.Indices[i*3 + 1] = i + 1;
+		mesh.Indices[i * 3 + 2] = (i + 2)>6?1: (i + 2);
+	}
+}
+
+void GeometryGenerator::CreateHexGrid(UINT width, UINT depth, float innerRadius, float outerRadius, MeshData & mesh)
+{
+	mesh.Indices.clear();
+	mesh.Vertices.clear();
+	XMFLOAT3 Pos{0.f,0.f,0.f};
+	for (UINT y = 0;y<depth;y++)
+	{
+		for (UINT x = 0;x<width;x++)
+		{
+			MeshData cellMesh;
+			Pos.x = x*innerRadius * 2+ y%2*innerRadius;
+			Pos.z = y*outerRadius*1.5;
+			CreateHexCell(innerRadius, outerRadius, cellMesh, Pos);
+			mesh.Vertices.insert(mesh.Vertices.end(), cellMesh.Vertices.begin(), cellMesh.Vertices.end());
+			mesh.Indices.insert(mesh.Indices.end(), cellMesh.Indices.begin(), cellMesh.Indices.end());
+		}
+	}
+}
+

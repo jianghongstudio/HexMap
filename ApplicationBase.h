@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <tchar.h>
+#include <memory>
 class Application
 {
 public:
@@ -31,5 +32,8 @@ protected:
 
 	UINT m_ClientWidth;
 	UINT m_ClientHeight;
+
+private:
+	static std::unique_ptr<Application> s_AppInstance;
 };
 

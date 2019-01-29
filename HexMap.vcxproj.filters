@@ -45,6 +45,21 @@
     <ClInclude Include="RenderD3D11.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="HexMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FXEffects.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,6 +84,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="RenderD3D11.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HexMap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FXEffects.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

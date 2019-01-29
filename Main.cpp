@@ -2,7 +2,7 @@
 #include "ApplicationD3D11.h"
 using namespace std;
 
-unique_ptr<Application> s_pAppInstance = std::make_unique<ApplicationD3D11>(_T("Hex-Map"));
+unique_ptr<Application> Application::s_AppInstance = std::make_unique<ApplicationD3D11>(_T("Hex-Map"));
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,

@@ -3,6 +3,7 @@
 #include "DirectXMath.h"
 #include "DirectXColors.h"
 #include "d3dcompiler.h"
+#include <WindowsX.h>
 using namespace DirectX;
 
 #ifdef _WINDOWS
@@ -11,25 +12,20 @@ using namespace DirectX;
 
 ApplicationD3D11::ApplicationD3D11(const TCHAR* titleName, const TCHAR* className)
 	: Application(titleName, className)
-	, m_Enable4xMsaa(false)
-	, m_4xMsaaQuality(0)
 	, m_AppPaused(false)
 	, m_Minimized(false)
 	, m_Maximized(false)
 	, m_Resizing(false)
 	, m_pTimer(nullptr)
-	, m_pFX(nullptr)
-	, m_pTech(nullptr)
-	, m_pfxWorldViewProj(nullptr)
-	, m_pWireFrameRS(nullptr)
+	, m_Hex(8.6f, 10.f,10,10)
 {
 #ifdef _WINDOWS
 	m_pTimer = new TimerWin32();
 #endif // 
-	XMMATRIX I = XMMatrixIdentity();
-	XMStoreFloat4x4(&m_View, I);
-	XMStoreFloat4x4(&m_World, I);
-	XMStoreFloat4x4(&m_Proj, I);
+	m_mainCamera.SetPosition(0, 30,-30);
+	m_mainCamera.LookAt(m_mainCamera.GetPosition(), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 1.f, 0.f));
+	mLastMousePos.x = 0;
+	mLastMousePos.y = 0;
 }
 
 
@@ -40,8 +36,6 @@ ApplicationD3D11::~ApplicationD3D11()
 		delete m_pTimer;
 		m_pTimer = nullptr;
 	}
-	ReleaseCOM(m_pWireFrameRS);
-	ReleaseCOM(m_pFX);
 }
 
 bool ApplicationD3D11::InitApp(HINSTANCE hinstance)
@@ -54,7 +48,24 @@ bool ApplicationD3D11::InitApp(HINSTANCE hinstance)
 	{
 		return false;
 	}
+	m_Hex.Initialize(m_render->GetD3DDeviceContext());
 	return true;
+}
+
+void ApplicationD3D11::OnMouseMove(WPARAM btnState, int x, int y)
+{
+	if ((btnState & MK_LBUTTON) != 0)
+	{
+		// Make each pixel correspond to a quarter of a degree.
+		float dx = XMConvertToRadians(
+			0.25f*static_cast<float>(x - mLastMousePos.x));
+		float dy = XMConvertToRadians(
+			0.25f*static_cast<float>(y - mLastMousePos.y));
+		m_mainCamera.Pitch(dy);
+		m_mainCamera.RotateY(dx);
+	}
+	mLastMousePos.x = x;
+	mLastMousePos.y = y;
 }
 
 bool ApplicationD3D11::InitDirectX3D11()
@@ -64,17 +75,14 @@ bool ApplicationD3D11::InitDirectX3D11()
 	m_render->CreateDeviceAndContext();
 	
 	OnResize();
-	BuildGeometryBuffer();
-	BuildFX();
-	BuildVertexLayout();
 	return true;
 }
 
 void ApplicationD3D11::OnResize()
 {
 	m_render->OnResize(m_ClientWidth, m_ClientHeight);
-	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*XM_PI, AspectRatio(), 1.0f, 1000.0f);
-	XMStoreFloat4x4(&m_Proj, P);
+
+	m_mainCamera.SetLens(XM_PIDIV4, m_render->AspectRatio(), 1.f, 1000.f);
 }
 
 LRESULT ApplicationD3D11::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -196,6 +204,7 @@ LRESULT ApplicationD3D11::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM
 	case WM_RBUTTONUP:
 		return 0;
 	case WM_MOUSEMOVE:
+		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	}
 
@@ -219,46 +228,14 @@ void ApplicationD3D11::OnFrame()
 
 void ApplicationD3D11::UpdateScene(float deltaTime)
 {
-	// Build the view matrix.
-	XMVECTOR pos = XMVectorSet(0, 0, 30.f, 1.f);
-	XMVECTOR target = XMVectorZero();
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
-	XMStoreFloat4x4(&m_View, V);
+	m_Hex.Update(deltaTime);
+	m_mainCamera.UpdateViewMatrix();
 }
 
 void ApplicationD3D11::RenderScene()
 {
 	m_render->Clear();
-	auto context = m_render->GetD3DDeviceContext();
-	context->IASetInputLayout(m_InputLayout.Get());
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-	auto VB = m_BoxVB.Get();
-	context->IASetVertexBuffers(0, 1, &VB, &stride, &offset);
-	context->IASetIndexBuffer(m_BoxIB.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-	//set constants
-	XMMATRIX world = XMLoadFloat4x4(&m_World);
-	XMMATRIX view = XMLoadFloat4x4(&m_View);
-	XMMATRIX proj = XMLoadFloat4x4(&m_Proj);
-	XMMATRIX worldViewProj = world*view*proj;
-	m_pfxWorldViewProj->SetMatrix(reinterpret_cast<float*>(&worldViewProj));
-
-	D3DX11_TECHNIQUE_DESC techDesc;
-	m_pTech->GetDesc(&techDesc);
-	for (UINT p = 0; p < techDesc.Passes; ++p)
-	{
-		m_pTech->GetPassByIndex(p)->Apply(0, context);
-
-		context->RSSetState(m_pWireFrameRS);
-		context->DrawIndexed(m_Indices.size(), 0, 0);
-	}
-
-
+	m_Hex.Draw(m_render->GetD3DDeviceContext(),&m_mainCamera);
 	m_render->Present();
 }
 
@@ -290,105 +267,4 @@ void ApplicationD3D11::CalculateFrameStats()
 		frameCnt = 0;
 		timeElapsed += 1.0f;
 	}
-}
-
-void ApplicationD3D11::BuildFX()
-{
-	// Compile Effect in runtime
-	/*UINT shaderFlag = 0;
-#if defined(DEBUG)||defined(_DEBUG)
-	shaderFlag |= D3D10_SHADER_DEBUG;
-	shaderFlag |= D3D10_SHADER_SKIP_OPTIMIZATION;
-#endif
-	ID3D10Blob* compileShader = nullptr;
-	ID3D10Blob* compileMsg = nullptr;
-	HRESULT hr = D3DX11CompileEffectFromFile(L"FX/color.fx", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, shaderFlag, 0, m_pDevice, &mfx, &compileMsg);
-	if (FAILED(hr))
-	{
-		if (compileMsg != 0)
-		{
-			MessageBoxA(0, (char*)compileMsg->GetBufferPointer(), 0, 0);
-		}
-	}
-	ReleaseCOM(compileMsg);*/
-
-	// Compile Effect in advance
-	std::ifstream fin("fx/color.fxo", std::ios::binary);
-
-	fin.seekg(0, std::ios_base::end);
-	int size = (int)fin.tellg();
-	fin.seekg(0, std::ios_base::beg);
-	std::vector<char> compiledShader(size);
-
-	fin.read(&compiledShader[0], size);
-	fin.close();
-
-	HR(D3DX11CreateEffectFromMemory(&compiledShader[0], size,
-		0, m_render->GetD3DDevice(), &m_pFX));
-	m_pTech = m_pFX->GetTechniqueByIndex(0);
-	m_pfxWorldViewProj = m_pFX->GetVariableByName("gWorldViewProj")->AsMatrix();
-}
-
-void ApplicationD3D11::BuildGeometryBuffer()
-{
-	m_Vertices.clear();
-	m_Indices.clear();
-	GeometryGenerator::MeshData box;
-	m_GeometryGenerator.CreateBox(10, 10, 10,box);
-
-	std::vector<Vertex> Vertices(box.Vertices.size());
-	for (size_t i = 0;i<Vertices.size();i++)
-	{
-		Vertices[i].Pos = box.Vertices[i].Position;
-		Vertices[i].Color = XMFLOAT4((const float*)&Colors::Red);
-	}
-
-	
-	m_Vertices.insert(m_Vertices.end(), Vertices.begin(), Vertices.end());
-	m_Indices.insert(m_Indices.end(), box.Indices.begin(), box.Indices.end());
-	D3D11_BUFFER_DESC vbd;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.CPUAccessFlags = 0;
-	vbd.ByteWidth = sizeof(Vertex)*m_Vertices.size();
-	vbd.MiscFlags = 0;
-	vbd.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA vinitData;
-	vinitData.pSysMem = &m_Vertices[0];
-
-	HR(m_render->GetD3DDevice()->CreateBuffer(&vbd, &vinitData, m_BoxVB.ReleaseAndGetAddressOf()));
-
-	D3D11_BUFFER_DESC ibd;
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-	ibd.CPUAccessFlags = 0;
-	ibd.ByteWidth = sizeof(UINT)*m_Indices.size();
-	ibd.MiscFlags = 0;
-	ibd.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA iinitData;
-	iinitData.pSysMem = &m_Indices[0];
-	HR(m_render->GetD3DDevice()->CreateBuffer(&ibd, &iinitData, m_BoxIB.ReleaseAndGetAddressOf()));
-}
-
-void ApplicationD3D11::BuildVertexLayout()
-{
-	// Create the vertex input layout.
-	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-
-	// Create the input layout
-	D3DX11_PASS_DESC passDesc;
-	m_pTech->GetPassByIndex(0)->GetDesc(&passDesc);
-	HR(m_render->GetD3DDevice()->CreateInputLayout(vertexDesc, 2, passDesc.pIAInputSignature,
-		passDesc.IAInputSignatureSize, m_InputLayout.ReleaseAndGetAddressOf()));
-}
-
-float ApplicationD3D11::AspectRatio()const
-{
-	return static_cast<float>(m_ClientWidth) / m_ClientHeight;
 }

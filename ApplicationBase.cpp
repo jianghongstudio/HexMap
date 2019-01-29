@@ -2,8 +2,6 @@
 #include "ApplicationBase.h"
 using namespace std;
 
-extern unique_ptr<Application> s_pAppInstance;
-
 Application::Application(const TCHAR* titleName, const TCHAR* className)
 	: m_szTitle(titleName)
 	, m_WndClassName(className)
@@ -47,7 +45,7 @@ void Application::Run()
 
 Application* Application::GetApp()
 {
-	return s_pAppInstance.get();
+	return s_AppInstance.get();
 }
 
 LRESULT Application::StaticWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -95,9 +93,9 @@ bool Application::CreateMainWindows(HINSTANCE hInstance)
 
 	m_hAppInstance = hInstance;
 	m_hWnd = hWnd;
+
 	ShowWindow(m_hWnd, SW_SHOW);
 	UpdateWindow(m_hWnd);
-
 	return true;
 }
 

@@ -5,6 +5,7 @@
 #include <d3d11_1.h>
 
 using Microsoft::WRL::ComPtr;
+using namespace  DirectX;
 
 RenderD3D11::RenderD3D11(DXGI_FORMAT backBufferFormat, DXGI_FORMAT depthBufferFormat, UINT backBufferCount, D3D_FEATURE_LEVEL minFeatureLevel)
 	:m_backBufferFormat(backBufferFormat)

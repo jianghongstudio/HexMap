@@ -1,4 +1,6 @@
 #pragma once
+#include "stdafx.h"
+#include <vector>
 #include "DirectXMath.h"
 using namespace DirectX;
 class GeometryGenerator
@@ -33,5 +35,9 @@ public:
 	/// Creates a box centered at the origin with the given dimensions.
 	///</summary>
 	void CreateBox(float width, float height, float depth, MeshData& meshData);
+
+	void CreateHexCell(float innerRadius, float outerradius, MeshData& mesh, const XMFLOAT3 offset={0.f,0.f,0.f});
+
+	void CreateHexGrid(UINT width, UINT depth, float innerRadius, float outerRadius, MeshData& mesh);
 };
 

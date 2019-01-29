@@ -1,11 +1,10 @@
 #pragma once
 #include "ApplicationBase.h"
-#include "d3d11.h"
 #include "Timer.h"
-#include "d3dx11effect.h"
-#include "GeometryGenerator.h"
 #include <wrl/client.h>
 #include "RenderD3D11.h"
+#include "HexMap.h"
+#include "Camera.h"
 
 struct Vertex
 {
@@ -22,6 +21,12 @@ public:
 
 	bool InitApp(HINSTANCE hinstance) final;
 
+	RenderD3D11* GetRender() { return m_render.get(); }
+
+	static ApplicationD3D11* GetApp() { return static_cast<ApplicationD3D11*>(Application::GetApp()); }
+
+	void OnMouseMove(WPARAM btnState, int x, int y);
+
 protected:
 	bool InitDirectX3D11();
 	void OnResize();
@@ -34,14 +39,8 @@ protected:
 
 	void CalculateFrameStats();
 
-	void BuildFX();
-	void BuildGeometryBuffer();
-	void BuildVertexLayout();
-
-	float AspectRatio()const;
 private:
 	
-	bool m_Enable4xMsaa;
 	bool m_AppPaused;
 	bool m_Minimized;
 	bool m_Maximized;
@@ -49,27 +48,12 @@ private:
 
 	Timer* m_pTimer;
 
-	UINT m_4xMsaaQuality;
-
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
 	std::unique_ptr<RenderD3D11> m_render;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_BoxVB;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_BoxIB;
-	ID3D11RasterizerState* m_pWireFrameRS;
 
-	//Effect
-	ID3DX11Effect* m_pFX;
-	ID3DX11EffectTechnique* m_pTech;
-	ID3DX11EffectMatrixVariable*  m_pfxWorldViewProj;
+	HexMap m_Hex;
 
-	//GeometryGenerator
-	GeometryGenerator m_GeometryGenerator;
-
-	XMFLOAT4X4 m_World;
-	XMFLOAT4X4 m_View;
-	XMFLOAT4X4 m_Proj;
-
-	std::vector<UINT> m_Indices;
-	std::vector<Vertex> m_Vertices;
+	Camera m_mainCamera;
+	
+	POINT mLastMousePos;
 };
 

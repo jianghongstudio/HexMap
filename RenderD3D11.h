@@ -22,7 +22,9 @@ public:
 	void Present();
 
 	ID3D11Device*           GetD3DDevice() const { return m_d3dDevice.Get(); }
+	//ID3D11Device1*          GetD3DDevice1() const { return m_d3dDevice1.Get(); }
 	ID3D11DeviceContext*    GetD3DDeviceContext() const { return m_d3dContext.Get(); }
+	//ID3D11DeviceContext1*   GetD3DDeviceContext1() const { return m_d3dContext1.Get(); }
 	IDXGISwapChain*         GetSwapChain() const { return m_swapChain.Get(); }
 	IDXGISwapChain1*        GetSwapChain1() const { return m_swapChain1.Get(); }
 	D3D_FEATURE_LEVEL       GetDeviceFeatureLevel() const { return m_d3dFeatureLevel; }
@@ -35,9 +37,13 @@ public:
 	D3D11_VIEWPORT          GetScreenViewport() const { return m_screenViewport; }
 	UINT                    GetBackBufferCount() const { return m_backBufferCount; }
 
+	float AspectRatio()const
+	{
+		return static_cast<float>(m_outputSize.right - m_outputSize.left) / (m_outputSize.bottom - m_outputSize.top);
+	}
+
 protected:
 	void GraphicResize();
-
 private:
 	// Direct3D objects.
 	Microsoft::WRL::ComPtr<ID3D11Device>            m_d3dDevice;

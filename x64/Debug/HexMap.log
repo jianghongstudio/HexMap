@@ -1,1 +1,25 @@
-﻿
+﻿  fxc compile for debug: E:\Projects\DirectX11\HexMap\HexMap\FX\color.fx
+  Microsoft (R) Direct3D Shader Compiler 10.1
+  Copyright (C) 2013 Microsoft. All rights reserved.
+  
+CUSTOMBUILD : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation code save succeeded; see color.cod
+  compilation object save succeeded; see E:\Projects\DirectX11\HexMap\HexMap\FX\color.fxo
+  fxc compile for debug: E:\Projects\DirectX11\HexMap\HexMap\FX\Basic.fx
+  Microsoft (R) Direct3D Shader Compiler 10.1
+  Copyright (C) 2013 Microsoft. All rights reserved.
+  
+CUSTOMBUILD : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation code save succeeded; see Basic.cod
+  compilation object save succeeded; see E:\Projects\DirectX11\HexMap\HexMap\FX\Basic.fxo
+  fxc compile for debug: E:\Projects\DirectX11\HexMap\HexMap\FX\LightHelper.fx
+  Microsoft (R) Direct3D Shader Compiler 10.1
+  Copyright (C) 2013 Microsoft. All rights reserved.
+  
+CUSTOMBUILD : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation code save succeeded; see LightHelper.cod
+  compilation object save succeeded; see E:\Projects\DirectX11\HexMap\HexMap\FX\LightHelper.fxo
+  HexMap.vcxproj -> E:\Projects\DirectX11\HexMap\x64\Debug\HexMap.exe

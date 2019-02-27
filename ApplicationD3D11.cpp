@@ -17,12 +17,15 @@ ApplicationD3D11::ApplicationD3D11(const TCHAR* titleName, const TCHAR* classNam
 	, m_Maximized(false)
 	, m_Resizing(false)
 	, m_pTimer(nullptr)
-	, m_Hex(8.6f, 10.f,10,10)
+	, m_Hex(10.f, 10, 10)
+	, m_Box(5, 5, 5)
+	, m_floor(50, 50,Colors::Green)
+	, m_wall(50, 50, Colors::Red)
 {
 #ifdef _WINDOWS
 	m_pTimer = new TimerWin32();
 #endif // 
-	m_mainCamera.SetPosition(0, 30,-30);
+	m_mainCamera.SetPosition(0, 10,-30);
 	m_mainCamera.LookAt(m_mainCamera.GetPosition(), XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 1.f, 0.f));
 	mLastMousePos.x = 0;
 	mLastMousePos.y = 0;
@@ -48,7 +51,11 @@ bool ApplicationD3D11::InitApp(HINSTANCE hinstance)
 	{
 		return false;
 	}
-	m_Hex.Initialize(m_render->GetD3DDeviceContext());
+	/*m_Hex.Initialize(m_render->GetD3DDeviceContext());
+	m_Box.Initialize(m_render->GetD3DDeviceContext());*/
+	m_Crate.Initialize(m_render->GetD3DDeviceContext());
+	m_floor.Initialize(m_render->GetD3DDeviceContext());
+	m_wall.Initialize(m_render->GetD3DDeviceContext());
 	return true;
 }
 
@@ -70,11 +77,20 @@ void ApplicationD3D11::OnMouseMove(WPARAM btnState, int x, int y)
 
 bool ApplicationD3D11::InitDirectX3D11()
 {
+#ifdef USING_ORIGINAL_RENDER
+	m_render = std::make_unique<OriginalRenderD3D11>();
+	m_render->SetWindow(m_hWnd, m_ClientWidth,m_ClientHeight);
+	m_render->CreateDeviceAndContext();
+
+	OnResize();
+#else
 	m_render = std::make_unique<RenderD3D11>();
 	m_render->SetWindow(m_hWnd);
 	m_render->CreateDeviceAndContext();
-	
+
 	OnResize();
+#endif // USING_ORIGINAL_RENDER
+
 	return true;
 }
 
@@ -206,6 +222,24 @@ LRESULT ApplicationD3D11::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM
 	case WM_MOUSEMOVE:
 		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
+	case WM_KEYDOWN:
+	{
+		int vk = static_cast<int>(wParam);
+		switch (vk)
+		{
+		case VK_UP:
+			m_mainCamera.Walk(0.1);
+			break;
+		case VK_DOWN:
+			m_mainCamera.Walk(-0.1);
+			break;
+		default:
+			break;
+		}
+	}
+		return 0;
+	case WM_KEYUP:
+		return 0;
 	}
 
 	return DefWindowProc(hwnd, message, wParam, lParam);
@@ -228,14 +262,27 @@ void ApplicationD3D11::OnFrame()
 
 void ApplicationD3D11::UpdateScene(float deltaTime)
 {
+	/*m_Box.SetPostion(0, 10, 0);
+	m_Hex.SetAngle(-XM_PIDIV2, 0, 0);
 	m_Hex.Update(deltaTime);
+	m_Box.Update(deltaTime);*/
+	m_Crate.SetPostion(-10, 10, 15);
+	m_floor.SetAngle(XM_PIDIV2, 0, 0);
+	m_wall.SetPostion(0, 25, 25);
+	m_Crate.Update(deltaTime);
+	m_wall.Update(deltaTime);
+	m_floor.Update(deltaTime);
 	m_mainCamera.UpdateViewMatrix();
 }
 
 void ApplicationD3D11::RenderScene()
 {
 	m_render->Clear();
-	m_Hex.Draw(m_render->GetD3DDeviceContext(),&m_mainCamera);
+	/*m_Hex.Draw(m_render->GetD3DDeviceContext(), &m_mainCamera);
+	m_Box.Draw(m_render->GetD3DDeviceContext(), &m_mainCamera);*/
+	m_Crate.Draw(m_render->GetD3DDeviceContext(), &m_mainCamera);
+	m_floor.Draw(m_render->GetD3DDeviceContext(), &m_mainCamera);
+	m_wall.Draw(m_render->GetD3DDeviceContext(), &m_mainCamera);
 	m_render->Present();
 }
 

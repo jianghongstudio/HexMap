@@ -5,7 +5,7 @@
 class Application
 {
 public:
-	Application(const TCHAR* titleName = _T("Title"),const TCHAR* className = _T("WndClass"));
+	Application(_In_ const TCHAR* titleName = _T("Title"), _In_ const TCHAR* className = _T("WndClass"));
 	virtual ~Application();
 
 	// disable copy

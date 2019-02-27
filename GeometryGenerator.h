@@ -34,10 +34,10 @@ public:
 	///<summary>
 	/// Creates a box centered at the origin with the given dimensions.
 	///</summary>
-	void CreateBox(float width, float height, float depth, MeshData& meshData);
+	static void CreateBox(float width, float height, float depth, MeshData& meshData);
 
-	void CreateHexCell(float innerRadius, float outerradius, MeshData& mesh, const XMFLOAT3 offset={0.f,0.f,0.f});
+	static void CreateHexCell(float innerRadius, float outerradius, MeshData& mesh, const XMFLOAT3 offset={0.f,0.f,0.f});
 
-	void CreateHexGrid(UINT width, UINT depth, float innerRadius, float outerRadius, MeshData& mesh);
+	static void CreateHexGrid(UINT width, UINT depth, float innerRadius, float outerRadius, MeshData& mesh);
 };
 

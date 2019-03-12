@@ -22,6 +22,7 @@ public:
 	}
 
 	inline ID3D11DeviceContext* GetD3DDeviceContext() const { return m_d3dImmediateContext.Get(); }
+	inline ID3D11Device* GetD3DDevice() const { return m_d3dDevice.Get(); }
 
 	void Clear();
 

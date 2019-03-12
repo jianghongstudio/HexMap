@@ -63,6 +63,18 @@
     <ClInclude Include="Crate.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Sky.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderToScreen.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HardwareInstancing.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MirrorD3D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -110,6 +122,18 @@
     <ClCompile Include="Crate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Sky.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderToScreen.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HardwareInstancing.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MirrorD3D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HexMap.rc">
@@ -132,6 +156,15 @@
       <Filter>FX</Filter>
     </CustomBuild>
     <CustomBuild Include="FX\LightHelper.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FX\Instancing.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FX\Lighting.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FX\Sky.fx">
       <Filter>FX</Filter>
     </CustomBuild>
   </ItemGroup>

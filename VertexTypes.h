@@ -23,6 +23,12 @@ namespace VertexTypes
 		XMFLOAT3 Normal;
 		XMFLOAT2 Tex;
 
+		VertexPostionNormalTex(XMFLOAT3 pos,XMFLOAT3 normal,XMFLOAT2 tex)
+			:Pos(pos)
+			,Normal(normal)
+			,Tex(tex)
+		{}
+		VertexPostionNormalTex() {}
 		static const int InputElementCount = 3;
 		static const D3D11_INPUT_ELEMENT_DESC InputElements[InputElementCount];
 		void ConvertFromGemometryVertex(const GeometryGenerator::Vertex& gVertex);

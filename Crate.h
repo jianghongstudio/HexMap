@@ -6,7 +6,7 @@
 class Crate:public GeometricPrimitive<VertexTypes::VertexPostionNormalTex>
 {
 public:
-	Crate(UINT width = 10, UINT height = 10, UINT depth = 10);
+	Crate(float width = 10, float height = 10, float depth = 10);
 	virtual ~Crate();
 
 	virtual void BuildGeometryBuffer(_In_ ID3D11Device* device) override;
@@ -20,14 +20,13 @@ public:
 protected:
 	virtual void BindFX(_In_ ID3D11Device* device) override;
 
-private:
-	UINT m_width;
-	UINT m_height;
-	UINT m_depth;
+	float m_width;
+	float m_height;
+	float m_depth;
 	DirectX::ScratchImage m_Image;
 	DirectX::ScratchImage m_Image2;
 	ComPtr<ID3D11ShaderResourceView> mDiffuseMapSRV;
-	//ComPtr<ID3D11ShaderResourceView> mAlphaMapSRV;
+	ComPtr<ID3D11ShaderResourceView> mAlphaMapSRV;
 
 	DirectionalLight mDirLights[3];
 	Material mBoxMat;

@@ -7,9 +7,7 @@
 #else
 #include "RenderD3D11.h"
 #endif // USING_ORIGINAL_RENDER
-#include "HexMap.h"
 #include "Camera.h"
-#include "Crate.h"
 
 class ApplicationD3D11 :
 	public Application
@@ -18,7 +16,7 @@ public:
 	ApplicationD3D11(_In_ const TCHAR* titleName = _T("D3D11App"), _In_ const TCHAR* className = _T("WndClass"));
 	virtual ~ApplicationD3D11();
 
-	bool InitApp(HINSTANCE hinstance) final;
+	virtual bool InitApp(HINSTANCE hinstance);
 #ifdef USING_ORIGINAL_RENDER
 	OriginalRenderD3D11* GetRender() { return m_render.get(); }
 #else
@@ -28,7 +26,8 @@ public:
 
 	static ApplicationD3D11* GetApp() { return static_cast<ApplicationD3D11*>(Application::GetApp()); }
 
-	void OnMouseMove(WPARAM btnState, int x, int y);
+	virtual void OnMouseMove(WPARAM btnState, int x, int y);
+	virtual void OnMouseButtonDown(WPARAM btnState, int x, int y);
 
 protected:
 	bool InitDirectX3D11();
@@ -37,12 +36,12 @@ protected:
 
 	virtual void OnFrame() override;
 
-	void UpdateScene(float deltaTime);
-	void RenderScene();
+	virtual void UpdateScene(float deltaTime);
+	virtual void RenderScene();
 
 	void CalculateFrameStats();
 
-private:
+protected:
 	
 	bool m_AppPaused;
 	bool m_Minimized;
@@ -55,13 +54,6 @@ private:
 #else
 	std::unique_ptr<RenderD3D11> m_render;
 #endif // USING_ORIGINAL_RENDER
-
-
-	HexMap m_Hex;
-	PrimitiveBox m_Box;
-	PrimitiveRectangular m_floor;
-	PrimitiveRectangular m_wall;
-	Crate m_Crate;
 
 	Camera m_mainCamera;
 	

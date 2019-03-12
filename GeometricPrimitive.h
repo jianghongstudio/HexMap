@@ -77,7 +77,7 @@ class PrimitiveBox :public GeometricPrimitive<VertexTypes::VertexPostionColor>
 {
 public:
 
-	PrimitiveBox(UINT width = 10, UINT height = 10, UINT depth = 10);
+	PrimitiveBox(float width = 10, float height = 10, float depth = 10);
 	virtual ~PrimitiveBox();
 
 	void Draw(ID3D11DeviceContext* context, const Camera* camera);
@@ -86,9 +86,9 @@ public:
 private:
 	GeometryGenerator m_geometryGenerator;
 
-	UINT m_width;
-	UINT m_height;
-	UINT m_depth;
+	float m_width;
+	float m_height;
+	float m_depth;
 };
 
 class PrimitiveRectangular: public GeometricPrimitive<VertexTypes::VertexPostionColor>
@@ -107,3 +107,32 @@ private:
 
 	XMFLOAT4 m_color;
 };
+
+class Sphere: public GeometricPrimitive<VertexTypes::VertexPostionNormalTex>
+{
+public:
+	Sphere(float radius = 5.f, UINT sliceCount = 30, UINT stackCount = 30);
+	~Sphere() {}
+
+	// Inherited via GeometricPrimitive
+	virtual void BuildGeometryBuffer(ID3D11Device * device) override;
+
+	virtual void Draw(ID3D11DeviceContext * context, const Camera * camera) override;
+
+	void BindFX(_In_ ID3D11Device* device) override;
+
+	void SetMaterial(const XMFLOAT4& Ambient, const XMFLOAT4& Diffuse, const XMFLOAT4& Specular, const XMFLOAT4& Reflect);
+	void SetCubeMap(ID3D11ShaderResourceView* map) { cubeMap = map; }
+	void SetDirLights(DirectionalLight* dirlights) { mDirLights = dirlights; }
+
+private:
+	float m_radius;
+	float m_sliceCount;
+	float m_stackCount;
+
+	Material m_sphereMaterial;
+	DirectionalLight* mDirLights;
+
+	ID3D11ShaderResourceView* cubeMap;
+};
+

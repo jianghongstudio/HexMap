@@ -39,5 +39,7 @@ public:
 	static void CreateHexCell(float innerRadius, float outerradius, MeshData& mesh, const XMFLOAT3 offset={0.f,0.f,0.f});
 
 	static void CreateHexGrid(UINT width, UINT depth, float innerRadius, float outerRadius, MeshData& mesh);
+
+	static void CreateSphere(float radius, UINT sliceCount, UINT stackCount, MeshData& meshData);
 };
 

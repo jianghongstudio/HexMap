@@ -2,7 +2,7 @@
 #include "Crate.h"
 using namespace DirectX;
 
-Crate::Crate(UINT width, UINT height, UINT depth)
+Crate::Crate(float width, float height, float depth)
 	:GeometricPrimitive()
 	,m_width(width)
 	,m_height(height)
@@ -100,7 +100,7 @@ void Crate::Draw(_In_ ID3D11DeviceContext* context, _In_ const Camera* camera)
 	renderFX->SetFogStart(15.0f);
 	renderFX->SetFogRange(175.0f);
 
-	ID3DX11EffectTechnique* activeTech = renderFX->Light1TexFog;
+	ID3DX11EffectTechnique* activeTech = renderFX->Light2TexFog;
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
@@ -119,8 +119,8 @@ void Crate::Initialize(_In_ ID3D11DeviceContext* context)
 	TexMetadata texMeta;
 	HR(LoadFromDDSFile(L"Textures/flare.dds", DDS_FLAGS_NONE,&texMeta, m_Image));
 	HR(CreateShaderResourceView(device.Get(), m_Image.GetImages(), m_Image.GetImageCount(), texMeta, mDiffuseMapSRV.ReleaseAndGetAddressOf()));
-	/*HR(LoadFromDDSFile(L"Textures/flarealpha.dds", DDS_FLAGS_NONE, &texMeta, m_Image2));
-	HR(CreateShaderResourceView(device.Get(), m_Image2.GetImages(), m_Image2.GetImageCount(), texMeta, mAlphaMapSRV.ReleaseAndGetAddressOf()));*/
+	HR(LoadFromDDSFile(L"Textures/flarealpha.dds", DDS_FLAGS_NONE, &texMeta, m_Image2));
+	HR(CreateShaderResourceView(device.Get(), m_Image2.GetImages(), m_Image2.GetImageCount(), texMeta, mAlphaMapSRV.ReleaseAndGetAddressOf()));
 }
 
 void Crate::BindFX(_In_ ID3D11Device* device)

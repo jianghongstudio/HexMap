@@ -74,7 +74,7 @@ void HexMap::Draw(ID3D11DeviceContext * context, const Camera * camera)
 	XMMATRIX world = XMLoadFloat4x4(&m_World);
 	XMMATRIX ViewProj = camera->ViewProj();
 	XMMATRIX worldViewProj = world*ViewProj;
-	m_renderFX->SetWorldViewProjMatrix(worldViewProj);
+	//m_renderFX->SetWorldViewProjMatrix(worldViewProj);
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	m_renderFX->GetEffectTechnique()->GetDesc(&techDesc);
